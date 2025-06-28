@@ -518,7 +518,7 @@ export default async ({ req, res, log, error }) => {
   const collID = ID.unique();
   await databases.createCollection(dbID, collID, Date.now());
 
-  const fetchWeatherAndStore = async ([lat, lon, name]) => {
+  const fetchWeatherAndStore = async ([lat, lon]) => {
     const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${key}`);
     const json = await response.json();
     const documentData = {
