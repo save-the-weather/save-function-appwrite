@@ -516,29 +516,27 @@ export default async ({ req, res, log, error }) => {
   const databases = new Databases(client);
   const dbID = '686017f10026f1f03f14';
   const collID = ID.unique();
- await databases.createCollection(dbID, collID, `weather-${new Date().toISOString()}`);
+  await databases.createCollection(dbID, collID, `weather-${new Date().toISOString()}`);
 
-await databases.createStringAttribute(dbID, collID, 'location', 128, true);
-await databases.createFloatAttribute(dbID, collID, 'temp', true);
-await databases.createFloatAttribute(dbID, collID, 'humidity', true);
-await databases.createStringAttribute(dbID, collID, 'weather', 128, false);
+  await databases.createStringAttribute(dbID, collID, 'location', 128, true);
+  await databases.createFloatAttribute(dbID, collID, 'temp', true);
+  await databases.createFloatAttribute(dbID, collID, 'humidity', true);
+  await databases.createStringAttribute(dbID, collID, 'weather', 128, false);
 
-await new Promise(res => setTimeout(res, 3000)); // Let Appwrite finish creating attributes
+  await new Promise(res => setTimeout(res, 3000)); // Let Appwrite finish creating attributes
 
-const fetchWeatherAndStore = async ([lat, lon, name]) => {
-  const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${key}`);
-  const json = await response.json();
-  const documentData = {
-    location: name,
-    temp: json.main?.temp,
-    humidity: json.main?.humidity,
-    weather: json.weather?.[0]?.description,
+  const fetchWeatherAndStore = async ([lat, lon, name]) => {
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${key}`);
+    const json = await response.json();
+    const documentData = {
+      location: name,
+      temp: json.main?.temp,
+      humidity: json.main?.humidity,
+      weather: json.weather?.[0]?.description,
+    };
+    return databases.createDocument(dbID, collID, ID.unique(), documentData);
   };
-  return databases.createDocument(dbID, collID, ID.unique(), documentData);
-};
-
-await Promise.all(locations.map(fetchWeatherAndStore));
 
   await Promise.all(locations.map(fetchWeatherAndStore));
-  res.send('done');
+  res.empty();
 }
