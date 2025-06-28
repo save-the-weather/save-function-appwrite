@@ -521,4 +521,5 @@ export default async ({ req, res, log, error }) => {
     let json = await response.json();
     databases.createDocument('', collID, ID.unique(), json);
   }
+  res.send('done');
 }
