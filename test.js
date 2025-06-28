@@ -1,15 +1,7 @@
-import { Client, Databases, ID } from 'node-appwrite';
-
-// This Appwrite function will be executed every time your function is triggered
-export default async ({ req, res, log, error }) => {
-  // You can use the Appwrite SDK to interact with other services
-  // For this example, we're using the Users service
-  const client = new Client()
-    .setEndpoint(process.env.APPWRITE_FUNCTION_API_ENDPOINT)
-    .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
-    .setKey(req.headers['x-appwrite-key'] ?? '');
-  const key = process.env.OPENWEATHERMAP_KEY;
-  const locations = [
+// You can use the Appwrite SDK to interact with other services
+// For this example, we're using the Users service
+const key = "562187a5d38878d0ca23cab7fe99450c";
+const locations = [
     [35.6839, 139.7744, "Tokyo, Japan"],
     [-6.2146, 106.8451, "Jakarta, Indonesia"],
     [28.6667, 77.2167, "Delhi, India"],
@@ -510,35 +502,15 @@ export default async ({ req, res, log, error }) => {
     [50.0000, 36.2292, "Kharkiv, Ukraine"],
     [31.8775, 120.5512, "Yangshe, China"],
     [36.0080, 106.2782, "Guyuan, China"]*/
-  ];
+];
 
 
-  const databases = new Databases(client);
-  const dbID = '686017f10026f1f03f14';
-  const collID = ID.unique();
- await databases.createCollection(dbID, collID, `weather-${new Date().toISOString()}`);
-
-await databases.createStringAttribute(dbID, collID, 'location', 128, true);
-await databases.createFloatAttribute(dbID, collID, 'temp', true);
-await databases.createFloatAttribute(dbID, collID, 'humidity', true);
-await databases.createStringAttribute(dbID, collID, 'weather', 128, false);
-
-await new Promise(res => setTimeout(res, 3000)); // Let Appwrite finish creating attributes
-
-const fetchWeatherAndStore = async ([lat, lon, name]) => {
-  const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${key}`);
-  const json = await response.json();
-  const documentData = {
-    location: name,
-    temp: json.main?.temp,
-    humidity: json.main?.humidity,
-    weather: json.weather?.[0]?.description,
-  };
-  return databases.createDocument(dbID, collID, ID.unique(), documentData);
-};
-
-await Promise.all(locations.map(fetchWeatherAndStore));
-
-  await Promise.all(locations.map(fetchWeatherAndStore));
-  res.send('done');
+// const databases = new Databases(client);
+// const collID = ID.unique()
+// databases.createCollection('686017f10026f1f03f14', collID, Date.now());
+for (let i = 0; i < locations.length; i++) {
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${locations[i][0]}&lon=${locations[i][1]}&appid=${key}`);
+    let json = await response.json();
+    console.log(json)
+    // databases.createDocument('', collID, ID.unique(), { ...json, locationname: location[i][2] });
 }
