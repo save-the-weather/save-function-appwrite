@@ -538,5 +538,5 @@ export default async ({ req, res, log, error }) => {
   };
 
   await Promise.all(locations.map(fetchWeatherAndStore));
-  res.empty();
+  return res.empty();
 }
