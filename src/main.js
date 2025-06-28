@@ -522,7 +522,7 @@ export default async ({ req, res, log, error }) => {
     const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${key}`);
     const json = await response.json();
     const documentData = {
-      location: name,
+      location: json.main?.name,
       temp: json.main?.temp,
       humidity: json.main?.humidity,
       weather: json.weather?.[0]?.description,
