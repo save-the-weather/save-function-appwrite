@@ -15,7 +15,7 @@ export default async ({ req, res, log, error }) => {
     [28.6667, 77.2167, "Delhi, India"],
     [14.6000, 120.9833, "Manila, Philippines"],
     [-23.5504, -46.6339, "São Paulo, Brazil"],
-    [37.5600, 126.9900, "Seoul, South Korea"],
+    /*[37.5600, 126.9900, "Seoul, South Korea"],
     [19.0758, 72.8775, "Mumbai, India"],
     [31.1667, 121.4667, "Shanghai, China"],
     [19.4333, -99.1333, "Mexico City, Mexico"],
@@ -509,35 +509,16 @@ export default async ({ req, res, log, error }) => {
     [32.0500, -7.4000, "El Kelaa des Srarhna, Morocco"],
     [50.0000, 36.2292, "Kharkiv, Ukraine"],
     [31.8775, 120.5512, "Yangshe, China"],
-    [36.0080, 106.2782, "Guyuan, China"]
+    [36.0080, 106.2782, "Guyuan, China"]*/
   ];
 
 
   const databases = new Databases(client);
-
-  try {
-    let arr = []
-    for (let i = 0; i < locations.length; i++) {
-      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${locations[i][0]}&lon=${locations[i][1]}&appid=${key}`);
-      const json = await response.json()
-      arr.push(json);
-    }
-    await databases.createDocument(
-      '686017f10026f1f03f14',
-      '686018b2002781f14f08',
-      ID.unique(),
-      arr
-    )
-
-    // await databases.createDocument(
-    //   '686017f10026f1f03f14',
-    //   '686018b2002781f14f08',
-    //   ID.unique(),
-    //   {}
-    // )
-  } catch (error) {
-
+  const collID = ID.unique()
+  databases.createCollection('686017f10026f1f03f14', collID, Date.now());
+  for (let i = 0; i < locations.length; i++) {
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${locations[i][0]}&lon=${locations[i][1]}&appid=${key}`);
+    let json = await response.json();
+    databases.createDocument('', collID, ID.unique(), {...json, locationname: location[i][2]});
   }
-  console.log(arr);
-  res.json(arr);
-};
+}
