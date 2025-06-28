@@ -15,7 +15,7 @@ export default async ({ req, res, log, error }) => {
     [28.6667, 77.2167, "Delhi, India"],
     [14.6000, 120.9833, "Manila, Philippines"],
     [-23.5504, -46.6339, "São Paulo, Brazil"],
-    /*[37.5600, 126.9900, "Seoul, South Korea"],
+    [37.5600, 126.9900, "Seoul, South Korea"],
     [19.0758, 72.8775, "Mumbai, India"],
     [31.1667, 121.4667, "Shanghai, China"],
     [19.4333, -99.1333, "Mexico City, Mexico"],
@@ -509,7 +509,7 @@ export default async ({ req, res, log, error }) => {
     [32.0500, -7.4000, "El Kelaa des Srarhna, Morocco"],
     [50.0000, 36.2292, "Kharkiv, Ukraine"],
     [31.8775, 120.5512, "Yangshe, China"],
-    [36.0080, 106.2782, "Guyuan, China"]*/
+    [36.0080, 106.2782, "Guyuan, China"]
   ];
 
 
