@@ -514,12 +514,22 @@ export default async ({ req, res, log, error }) => {
 
 
   const databases = new Databases(client);
-  const collID = ID.unique()
-  databases.createCollection('686017f10026f1f03f14', collID, Date.now());
-  for (let i = 0; i < locations.length; i++) {
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${locations[i][0]}&lon=${locations[i][1]}&appid=${key}`);
-    let json = await response.json();
-    databases.createDocument('', collID, ID.unique(), json);
-  }
+  const dbID = '686017f10026f1f03f14';
+  const collID = ID.unique();
+  await databases.createCollection(dbID, collID, Date.now());
+
+  const fetchWeatherAndStore = async ([lat, lon, name]) => {
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${key}`);
+    const json = await response.json();
+    const documentData = {
+      location: name,
+      temp: json.main?.temp,
+      humidity: json.main?.humidity,
+      weather: json.weather?.[0]?.description,
+    };
+    return databases.createDocument(dbID, collID, ID.unique(), documentData);
+  };
+
+  await Promise.all(locations.map(fetchWeatherAndStore));
   res.send('done');
 }
