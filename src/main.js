@@ -533,6 +533,9 @@ export default async ({ req, res, log, error }) => {
       temp: json.main?.temp,
       humidity: json.main?.humidity,
       weather: json.weather?.[0]?.description,
+      rain: json.rain?.1h?,
+      snow: json.snow?.1h?,
+      wind: json.wind?.speed?,
     };
     return databases.createDocument(dbID, collID, ID.unique(), documentData);
   };
